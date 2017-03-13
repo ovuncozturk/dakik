@@ -1,11 +1,6 @@
 import React, { Component, PropTypes, constructor, State } from 'react';
 import ReactDOM from 'react-dom';
-import { createContainer } from 'meteor/react-meteor-data';
-
 import ChatFrame from './ChatFrame.jsx';
-
-import { Chats } from '../../api/chats.js';
-
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TextField from 'material-ui/TextField';
@@ -21,7 +16,6 @@ export default class Chat extends Component {
     this.state = {
       message: '',
     }
-
     this.sendMessage = this.sendMessage.bind(this);
     this.updateMessage = this.updateMessage.bind(this);
     this.renderMessages = this.renderMessages.bind(this);

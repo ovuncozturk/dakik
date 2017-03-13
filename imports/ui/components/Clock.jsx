@@ -1,6 +1,8 @@
 import React, { Component, constructor, State } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
+import ReactCSSTransition from 'react-addons-css-transition-group';
+import Rsvg from 'react-inlinesvg';
 
 export default class Clock extends Component {
   constructor(props) {
@@ -53,6 +55,9 @@ export default class Clock extends Component {
               thickness={12}
             />
           </div>
+          <div className = "clockLogo">
+              <img src="dakik_logo.svg" alt=""/>
+            </div>
           <div className="clockText">
             {this.drawMinutes()}:{this.drawSeconds()}
           </div>
@@ -60,4 +65,4 @@ export default class Clock extends Component {
       </MuiThemeProvider>
     );
   }
-}
+} 

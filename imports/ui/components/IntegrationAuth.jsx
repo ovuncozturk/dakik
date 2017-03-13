@@ -6,15 +6,9 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import FlatButton from 'material-ui/FlatButton';
 import WunderlistApi from './WunderlistApi.jsx';
 
-import { Tasks } from '../../api/tasks.js';
-
-allTasks = null;
-
 export default class IntegrationAuth extends Component {
   constructor(props) {
     super(props);
-
-    allTasks = this.props.task;
 
     this.connectToTrello = this.connectToTrello.bind(this);
     this.exitFromTrello = this.exitFromTrello.bind(this);
@@ -85,70 +79,24 @@ export default class IntegrationAuth extends Component {
               Trello.get('/lists/' + lists[x].id + '/cards', function(cards) {
                 for(y=0;y<cards.length;y++) {
                   const taskName = cards[y].name;
-
-                  if(allTasks == null) {
-                    Tasks.insert({
-                      ownerId,
-                      taskName,
-                      taskPriority,
-                      checked,
-                      totalPomos,
-                      taskGoal,
-                      integratedWith,
-                      dueDate,
-                      createdAt,
-                    });
-                    allTasks[allTasks.length] = allTasks[0];
-                    allTasks[allTasks.length-1].taskName = taskName;
-                    allTasks[allTasks.length-1].ownerId = ownerId;
-                    allTasks[allTasks.length-1].taskPriority = 0;
-                    allTasks[allTasks.length-1].checked = false;
-                    allTasks[allTasks.length-1].totalPomos = 0;
-                    allTasks[allTasks.length-1].taskGoal = 0;
-                    allTasks[allTasks.length-1].integratedWith = integratedWith;
-                    allTasks[allTasks.length-1].dueDate = dueDate;
-                    allTasks[allTasks.length-1].createdAt = new Date();
-
-                    equal = equal + 1;
-                  } else {
-                    for(z=0;z<allTasks.length;z++) {
-                      if(cards[y].name == allTasks[z].taskName) {
-                        equal = equal + 1;
-                      }
-                    }
-                  }
-
-                  if(equal==0) {
-                    Tasks.insert({
-                      ownerId,
-                      taskName,
-                      taskPriority,
-                      checked,
-                      totalPomos,
-                      taskGoal,
-                      integratedWith,
-                      dueDate,
-                      createdAt,
-                    });
-                    allTasks[allTasks.length] = allTasks[0];
-                    allTasks[allTasks.length-1].taskName = taskName;
-                    allTasks[allTasks.length-1].ownerId = ownerId;
-                    allTasks[allTasks.length-1].taskPriority = 0;
-                    allTasks[allTasks.length-1].checked = false;
-                    allTasks[allTasks.length-1].totalPomos = 0;
-                    allTasks[allTasks.length-1].taskGoal = 0;
-                    allTasks[allTasks.length-1].integratedWith = integratedWith;
-                    allTasks[allTasks.length-1].dueDate = dueDate;
-                    allTasks[allTasks.length-1].createdAt = new Date();
-                  }
-                  equal = 0;
+                  Tasks.insert({
+                    ownerId,
+                    taskName,
+                    taskPriority,
+                    checked,
+                    totalPomos,
+                    taskGoal,
+                    integratedWith,
+                    dueDate,
+                    createdAt,
+                  });
                 }
               });
             }
-          });//Trello.get ++ lists
+          });
         }
-      });//Trello.get ++ boards
-    });//Trello.get ++ name
+      });
+    });
   }
 
   handleDisabled() {
@@ -175,7 +123,7 @@ export default class IntegrationAuth extends Component {
             </Tab>
             <Tab label="Wunderlist">
               <div>
-                <WunderlistApi currentUser={this.props.currentUser} task={this.props.task}/>
+                <WunderlistApi currentUser={this.props.currentUser} task={this.props.tasks}/>
               </div>
             </Tab>
           </Tabs>

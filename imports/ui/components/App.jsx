@@ -14,8 +14,10 @@ import TaskNew from './TaskNew.jsx';
 import IntegrationAuth from './IntegrationAuth.jsx';
 import Profile from './Profile.jsx';
 import Nav from './Nav.jsx';
+import Chat from './Chat.jsx';
 
 import { Tasks } from '../../api/tasks.js';
+import { Chats } from '../../api/chats.js';
 
 class App extends Component {
   constructor(props) {
@@ -38,17 +40,12 @@ class App extends Component {
     		return (
     			<Flexbox flexDirection='column'>
     				<Nav/>
-    				<ReactCSSTransition
-    					transitionName = "fromTopLoad"
-    					transitionEnterTimeout = {600}
-    					transitionLeaveTimeout = {400}>
-              <Flexbox flexDirection='column' className='timerContainer'>
-    			  		<div className='timer'>
-                  <Timer currentUser={this.props.currentUser}/>
-    			  		</div>
-    			  		<TaskView currentUser={this.props.currentUser} tasks={this.props.tasks}/>
-              </Flexbox>
-    				</ReactCSSTransition>
+            <Flexbox flexDirection='column' className='timerContainer'>
+    			  	<div className='timer'>
+                <Timer currentUser={this.props.currentUser}/>
+    			  	</div>
+    			  	<TaskView currentUser={this.props.currentUser} tasks={this.props.tasks}/>
+            </Flexbox>
     			</Flexbox>
     		);
   	  } else if(this.state.route == 'statistics') {
@@ -106,13 +103,16 @@ App.propTypes = {
 
 export default AppContainer = createContainer(() => {
   Meteor.subscribe('tasks');
+  Meteor.subscribe('chats');
   const currentUser = Meteor.user();
   const tasks = Tasks.find().fetch();
+  const chats = Chats.find({}).fetch();
   const route = Session.get('route');
 
   return {
     currentUser,
     route,
     tasks,
+    chats,
   };
 }, App);
