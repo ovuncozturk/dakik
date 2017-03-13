@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import FlatButton from 'material-ui/FlatButton';
 import WunderlistApi from './WunderlistApi.jsx';
+import { Tasks } from '../../api/tasks.js';
 
 export default class IntegrationAuth extends Component {
   constructor(props) {

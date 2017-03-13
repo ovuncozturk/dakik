@@ -1,5 +1,6 @@
 import React, { Component, constructor, PropTypes} from 'react';
 import FlatButton from 'material-ui/FlatButton';
+import { Tasks } from '../../api/tasks.js';
 
 export default class WunderlistApi extends Component {
   constructor(props) {

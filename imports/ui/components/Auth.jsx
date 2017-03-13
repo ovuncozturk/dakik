@@ -225,10 +225,8 @@ render() {
       <MuiThemeProvider>
         <Flexbox className="auth">
           <Card>
-            <CardHeader>
-              <div className = "authLogo">
-                <img src="dakik_logo.svg" alt=""/>
-              </div>
+            <CardHeader className="authLogo">
+              <img src="dakik_logo.svg" alt=""/>
             </CardHeader>
             <Tabs>
               <Tab label="Sign In">

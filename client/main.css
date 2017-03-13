@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway:100,200,400');
 :root {
-
 	/*New theme colors*/
 	--fallback:#041828;
 	--fallback-light:#557A99;
@@ -20,9 +18,6 @@
 	--kahve-dark:#381F00;
 	--kahve-light:#BFA17A;
 
-
-
-
 	/*
 	--main-darker:#004226;
 	--main-dark:#004D40;
@@ -30,17 +25,13 @@
 	--main-lighter: #89ffb8;
 	--dark-purple:#49004d;
 
-
 	--green: #6ed3cf;
 	--purple: #9068be;
 	--white: #e1e8f0;
 	--red: #e62739;
 	--dark: #242728;
 	*/
-
 }
-
-
 
 * {
 	margin:0;
@@ -258,7 +249,7 @@ html, body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	/*height: 100%;*/
+	height: 100%;
 }
 
 .authLogo  {
@@ -268,7 +259,7 @@ html, body {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  width: 7.5em;
+  width: 10em;
   margin: auto;
 }
 
@@ -277,8 +268,6 @@ html, body {
 
 .logo {
 }
-
-
 
 /* Animations */
 

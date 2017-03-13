@@ -124,16 +124,21 @@ export default class TaskFrame extends Component {
 
   startPomo(){
   	if (!this.props.currentUser.profile.playing) {
-  	  var date = new Date();
-  	  const newProfile = this.props.currentUser.profile;
+      if (!this.props.task.checked) {
+        var date = new Date();
+    	  const newProfile = this.props.currentUser.profile;
 
-  	  newProfile.playing = true;
-  	  newProfile.elapsedTime = 0;
-  	  newProfile.updateTime = date.valueOf();
-  	  newProfile.currentTaskId = this.props.task._id;
+    	  newProfile.playing = true;
+    	  newProfile.elapsedTime = 0;
+    	  newProfile.updateTime = date.valueOf();
+    	  newProfile.currentTaskId = this.props.task._id;
 
-  	  Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
-  	  this.closePopup();
+    	  Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
+    	  this.closePopup();
+      } else {
+        this.updateSnackbarText("Uncheck the task first");
+        this.openSnackbar();
+      }
   	}
   }
 
@@ -218,7 +223,7 @@ export default class TaskFrame extends Component {
       <FlatButton
         label="START"
         primary={true}
-        disabled={this.props.currentUser.profile.playing ? true : false}
+        disabled={this.props.currentUser.profile.playing || this.props.task.checked || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.startPomo}
       />,
     ];
