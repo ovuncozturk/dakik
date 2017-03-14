@@ -213,11 +213,13 @@ export default class TaskFrame extends Component {
       <FlatButton
         label="DELETE"
         primary={true}
+        disabled={this.props.currentUser.profile.playing || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.deleteTask}
       />,
       <FlatButton
         label="EDIT"
         primary={true}
+        disabled={this.props.currentUser.profile.playing || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.openEditPopup}
       />,
       <FlatButton
