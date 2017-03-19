@@ -20,144 +20,144 @@ import { Tasks } from '../../api/tasks.js';
 
 export default class TaskFrame extends Component {
   constructor(props) {
-  	super(props);
+    super(props);
 
-  	this.state = {
-  	  snackbar: false,
-  	  message: 'error',
-  	  checked: false,
-  	  popup: false,
-  	  popupEdit: false,
-  	  popup2: false,
+    this.state = {
+      snackbar: false,
+      message: 'error',
+      checked: false,
+      popup: false,
+      popupEdit: false,
+      popup2: false,
 
-  	  taskName: this.props.task.taskName,
-  	  taskPriority: this.props.task.taskPriority,
-  	  taskGoal: this.props.task.taskGoal,
-  	  dueDate: this.props.task.dueDate,
-  	}
+      taskName: this.props.task.taskName,
+      taskPriority: this.props.task.taskPriority,
+      taskGoal: this.props.task.taskGoal,
+      dueDate: this.props.task.dueDate,
+    }
 
-  	this.openSnackbar = this.openSnackbar.bind(this);
-  	this.closeSnackbar = this.closeSnackbar.bind(this);
-  	this.updateSnackbarText = this.updateSnackbarText.bind(this);
-  	this.toggleChecked = this.toggleChecked.bind(this);
-  	this.getStatus = this.getStatus.bind(this);
-  	this.openPopup = this.openPopup.bind(this);
-  	this.openEditTask = this.openEditTask.bind(this);
-  	this.closePopup = this.closePopup.bind(this);
-  	this.closePopup2 = this.closePopup2.bind(this);
-  	this.openEditPopup = this.openEditPopup.bind(this);
-  	this.editNewDetails = this.editNewDetails.bind(this);
+    this.openSnackbar = this.openSnackbar.bind(this);
+    this.closeSnackbar = this.closeSnackbar.bind(this);
+    this.updateSnackbarText = this.updateSnackbarText.bind(this);
+    this.toggleChecked = this.toggleChecked.bind(this);
+    this.getStatus = this.getStatus.bind(this);
+    this.openPopup = this.openPopup.bind(this);
+    this.openEditTask = this.openEditTask.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.closePopup2 = this.closePopup2.bind(this);
+    this.openEditPopup = this.openEditPopup.bind(this);
+    this.editNewDetails = this.editNewDetails.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
 
-  	this.updateTaskName = this.updateTaskName.bind(this);
-  	this.updatePriority = this.updatePriority.bind(this);
-  	this.updateTaskGoal = this.updateTaskGoal.bind(this);
-  	this.updateDueDate = this.updateDueDate.bind(this);
-  	this.startPomo = this.startPomo.bind(this);
+    this.updateTaskName = this.updateTaskName.bind(this);
+    this.updatePriority = this.updatePriority.bind(this);
+    this.updateTaskGoal = this.updateTaskGoal.bind(this);
+    this.updateDueDate = this.updateDueDate.bind(this);
+    this.startPomo = this.startPomo.bind(this);
   }
 
   componentDidMount(){
-  	this.setState({
-  	  checked: this.props.task.checked,
-  	});
+    this.setState({
+      checked: this.props.task.checked,
+    });
   }
 
   updateSnackbarText(value){
-  	this.setState({
-  	  message: value
-  	});
+    this.setState({
+      message: value
+    });
   }
 
   openSnackbar(){
-  	this.setState({
-  	  snackbar: true,
-  	});
+    this.setState({
+      snackbar: true,
+    });
   }
 
   closeSnackbar(){
-  	this.setState({
-  	  snackbar: false,
-  	});
+    this.setState({
+      snackbar: false,
+    });
   }
 
   openPopup(){
-  	this.setState({
-  	  popup: true
-  	});
+    this.setState({
+      popup: true
+    });
   }
 
   closePopup() {
-  	this.setState({
-  	  popup: false
-  	});
+    this.setState({
+      popup: false
+    });
   }
 
   closePopup2() {
-  	this.setState({
-  	  popup2: false
-  	});
+    this.setState({
+      popup2: false
+    });
   }
 
   updateTaskName(event, value){
-  	this.setState({
-  	  taskName: value
-  	});
+    this.setState({
+      taskName: value
+    });
   }
 
   updatePriority(event, value){
-  	this.setState({
-  	  taskPriority: value
-  	});
+    this.setState({
+      taskPriority: value
+    });
   }
 
   updateTaskGoal(event, value) {
-  	this.setState({
-  	  taskGoal: value
-  	});
+    this.setState({
+      taskGoal: value
+    });
   }
 
   updateDueDate(event, date) {
-  	this.setState({
-  	  dueDate: date,
-  	});
+    this.setState({
+      dueDate: date,
+    });
   }
 
   startPomo(){
-  	if (!this.props.currentUser.profile.playing) {
+    if (!this.props.currentUser.profile.playing) {
       if (!this.props.task.checked) {
         var date = new Date();
-    	  const newProfile = this.props.currentUser.profile;
+        const newProfile = this.props.currentUser.profile;
 
-    	  newProfile.playing = true;
-    	  newProfile.elapsedTime = 0;
-    	  newProfile.updateTime = date.valueOf();
-    	  newProfile.currentTaskId = this.props.task._id;
+        newProfile.playing = true;
+        newProfile.elapsedTime = 0;
+        newProfile.updateTime = date.valueOf();
+        newProfile.currentTaskId = this.props.task._id;
 
-    	  Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
-    	  this.closePopup();
+        Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
+        this.closePopup();
       } else {
         this.updateSnackbarText("Uncheck the task first");
         this.openSnackbar();
       }
-  	}
+    }
   }
 
   deleteTask(){
     this.setState({
-    	popup: false,
-    	popup2: false
+      popup: false,
+      popup2: false
     });
     Tasks.remove(this.props.task._id);
   }
 
   editNewDetails() {
-  	const taskId = this.props.task._id;
-  	const taskName = this.state.taskName;
-  	const taskPriority = this.state.taskPriority;
-  	const taskGoal = this.state.taskGoal;
-  	const dueDate = this.state.dueDate;
+    const taskId = this.props.task._id;
+    const taskName = this.state.taskName;
+    const taskPriority = this.state.taskPriority;
+    const taskGoal = this.state.taskGoal;
+    const dueDate = this.state.dueDate;
 
-  	Tasks.update(
+    Tasks.update(
       {_id: taskId}, {$set:{
         taskName,
         taskPriority,
@@ -170,19 +170,19 @@ export default class TaskFrame extends Component {
 
   openEditPopup() {
     this.setState({
-    	popup: false,
-    	popup2: true,
-    	taskName: this.props.task.taskName,
-    	taskPriority: this.props.task.taskPriority,
-    	taskGoal: this.props.task.taskGoal,
-    	dueDate: this.props.task.dueDate,
+      popup: false,
+      popup2: true,
+      taskName: this.props.task.taskName,
+      taskPriority: this.props.task.taskPriority,
+      taskGoal: this.props.task.taskGoal,
+      dueDate: this.props.task.dueDate,
     });
   }
 
   openEditTask(){
     this.setState({
-    	popup: false,
-    	popupEdit: true
+      popup: false,
+      popupEdit: true
     });
   }
 
@@ -192,15 +192,15 @@ export default class TaskFrame extends Component {
     });
 
     Tasks.update(this.props.task._id, {
-  	  $set: { checked: !this.state.checked },
+      $set: { checked: !this.state.checked },
     });
   }
 
   getStatus(){
     if (this.state.checked) {
-  	 return 'checked';
+      return 'checked';
     }
-      return '';
+    return '';
   }
 
   render() {
@@ -222,10 +222,11 @@ export default class TaskFrame extends Component {
         primary={true}
         disabled={this.props.currentUser.profile.playing || this.props.task.checked || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.startPomo}
+        className = "actionButton start"
       />,
     ];
 
-  	const actions2 = [
+    const actions2 = [
       <FlatButton
         label="CANCEL"
         primary={true}
@@ -247,33 +248,33 @@ export default class TaskFrame extends Component {
       />
     );
 
-  	const leftCheckbox = (
-  	  <Checkbox
-  		checked={this.state.checked}
-  		onCheck={this.toggleChecked}
-  	  />
-  	);
+    const leftCheckbox = (
+      <Checkbox
+        checked={this.state.checked}
+        onCheck={this.toggleChecked}
+      />
+    );
 
-	  return (
+    return (
       <MuiThemeProvider>
-        <div>
+        <div className = "taskFrame"> 
           <ListItem className= {"taskListItem " + this.getStatus()}
             leftCheckbox={leftCheckbox}
             primaryText={this.props.task.taskName}
-            rightIconButton={<IconButton iconClassName="fa fa-wrench" style={{padding: '-12px'}} onClick={this.openPopup} tooltip="Settings"/>
-            }
-          />
-          <Dialog
-            title="TASK DETAILS"
-            actions={actions}
-            modal={false}
-            open={this.state.popup}
-            onRequestClose={this.closePopup}
-            titleClassName="taskDetailsTitle"
-            contentClassName="taskDetailsContent"
-            bodyClassName="taskDetailsBody"
-            actionsContainerClassName="taskDetailsActions"
-            >
+            rightIconButton={<IconButton iconClassName="fa fa-ellipsis-v" style={{padding: '-12px'}} onClick={this.openPopup} tooltip="Settings"/>
+          }
+        />
+        <Dialog
+          title="TASK DETAILS"
+          actions={actions}
+          modal={false}
+          open={this.state.popup}
+          onRequestClose={this.closePopup}
+          titleClassName="taskDetailsTitle"
+          contentClassName="taskDetailsContent"
+          bodyClassName="taskDetailsBody"
+          actionsContainerClassName="taskDetailsActions"
+          >
             <p className="taskName">{this.props.task.taskName}</p>
 
             <div className="priority each">
@@ -306,10 +307,11 @@ export default class TaskFrame extends Component {
             modal={false}
             open={this.state.popup2}
             onRequestClose={this.closePopup2}
-            contentClassName="taskDetailsContent"
-            titleClassName="taskDetailsTitle"
+            className="taskEditTitle"
+            titleClassName="taskEditTitle"
+            contentClassName="taskEditContent"
             bodyClassName="taskEditBody"
-            actionsContainerClassName="taskDetailsActions"
+            actionsContainerClassName="taskEditActions"
             >
               <TextField
                 id="edit-task-name"
@@ -354,15 +356,15 @@ export default class TaskFrame extends Component {
                   onChange={this.updateDueDate}
                   className = "each"
                 />
+                <Snackbar
+                  open={this.state.snackbar}
+                  message={this.state.message}
+                  autoHideDuration={4000}
+                  onRequestClose={this.closeSnackbar}
+                />
               </Dialog>
-          <Snackbar
-            open={this.state.snackbar}
-            message={this.state.message}
-            autoHideDuration={4000}
-            onRequestClose={this.closeSnackbar}
-          />
-        </div>
-      </MuiThemeProvider>
-    );
-	}
-}
+            </div>
+          </MuiThemeProvider>
+        );
+      }
+    }

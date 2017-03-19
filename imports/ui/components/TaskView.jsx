@@ -67,15 +67,15 @@ export default class TaskView extends Component {
     if (this.props.tasks !== undefined && this.props.currentUser !== undefined) {
       return (
         <MuiThemeProvider>
-          <Flexbox className="taskList">
+          <Flexbox>
             <Card className="taskListCard">
               <CardText>
-                <Subheader>
+                <Subheader className="subheader">
                   #TagNameHere
                   <IconButton iconClassName="fa fa-plus-square-o" style={{padding: '-12px'}} onClick={this.routeNewTask} tooltip="New Task"/>
-                  <Toggle label="Hide completed tasks" labelPosition="right" toggled={this.state.hideCompleted} onToggle={this.toggleHide}/>
+                  <Toggle label="Hide completed" labelPosition="right" toggled={this.state.hideCompleted} onToggle={this.toggleHide} className = "toggleChecked"/>
                 </Subheader>
-                <List>
+                <List className="taskList">
                   <ReactCSSTransition
                     transitionName = "taskFrameLoad"
                     transitionEnterTimeout = {600}
