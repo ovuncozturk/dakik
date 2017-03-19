@@ -63,7 +63,8 @@ export default class IntegrationAuth extends Component {
   }
 
   addToDatabase() {
-    const ownerId = this.props.currentUser._id;
+    const user = this.props.currentUser;
+    const ownerId = user._id;
     const checked = false;
     const taskPriority = 0;
     const totalPomos = 0;
@@ -71,6 +72,15 @@ export default class IntegrationAuth extends Component {
     const integratedWith = "trello";
     const dueDate = null;
     const createdAt = new Date();
+    var taskCount = 0;
+    var trelloTasksCount = 0;
+    if (user.profile.taskCount !== undefined) {
+      taskCount = user.profile.taskCount;
+    }
+
+    if (user.profile.trelloTasksCount !== undefined) {
+      trelloTasksCount = user.profile.trelloTasksCount;
+    }
 
     Trello.members.get("me", function(member){
       Trello.get("/member/me/boards", function(boards) {
@@ -91,12 +101,20 @@ export default class IntegrationAuth extends Component {
                     dueDate,
                     createdAt,
                   });
+
+                  taskCount += 1;
+                  trelloTasksCount += 1;
+                  const newProfile = user.profile;
+                  newProfile.taskCount = taskCount;
+                  newProfile.trelloTasksCount = trelloTasksCount;
+                  Meteor.users.update({_id: user._id},{$set: {profile: newProfile}});
                 }
               });
             }
           });
         }
       });
+
     });
   }
 

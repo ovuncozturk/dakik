@@ -206,11 +206,6 @@ export default class TaskFrame extends Component {
   render() {
     const actions = [
       <FlatButton
-        label="CANCEL"
-        primary={true}
-        onTouchTap={this.closePopup}
-      />,
-      <FlatButton
         label="DELETE"
         primary={true}
         disabled={this.props.currentUser.profile.playing || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
@@ -274,16 +269,36 @@ export default class TaskFrame extends Component {
             modal={false}
             open={this.state.popup}
             onRequestClose={this.closePopup}
+            titleClassName="taskDetailsTitle"
+            contentClassName="taskDetailsContent"
+            bodyClassName="taskDetailsBody"
+            actionsContainerClassName="taskDetailsActions"
             >
-            <Card>
-              <CardText>
-                Task Name: {this.props.task.taskName} <br />
-                Priority: {this.props.task.taskPriority} <br />
-                Pomotime: {this.props.task.totalPomos} <br />
-                Estimated Pomos: {this.props.task.taskGoal} <br />
-                Due Date: {moment(this.props.task.dueDate).format("MMM Do YY")}
-              </CardText>
-            </Card>
+            <p className="taskName">{this.props.task.taskName}</p>
+
+            <div className="priority each">
+              <p className="target">Priority:
+              </p>
+              <p className="value">{this.props.task.taskPriority}</p>
+            </div>
+
+            <div className="pomoTime each">
+              <p className="target">Pomotime:
+              </p>
+              <p className="value">{this.props.task.totalPomos}</p>
+            </div>
+
+            <div className="estPomos each">
+              <p className="target">Estimated Pomos:
+              </p>
+              <p className="value">{this.props.task.taskGoal}</p>
+            </div>
+
+            <div className="due each">
+              <p className="target">Due Date:
+              </p>
+              <p className="value">{moment(this.props.task.dueDate).format("MMM Do YY")}</p>
+            </div>
           </Dialog>
           <Dialog
             title="TASK EDIT"
@@ -291,52 +306,55 @@ export default class TaskFrame extends Component {
             modal={false}
             open={this.state.popup2}
             onRequestClose={this.closePopup2}
+            contentClassName="taskDetailsContent"
+            titleClassName="taskDetailsTitle"
+            bodyClassName="taskEditBody"
+            actionsContainerClassName="taskDetailsActions"
             >
-            <CardText>
-              <Flexbox flexDirection="column">
-                <TextField
-                  id="edit-task-name"
-                  value={this.state.taskName}
-                  type="text"
-                  onChange={this.updateTaskName}
-                  floatingLabelText="Task Name"
-                />
+              <TextField
+                id="edit-task-name"
+                value={this.state.taskName}
+                type="text" onChange={this.updateTaskName}
+                floatingLabelText="Task Name"
+                className = "taskName each"/>
+
                 <SelectField
                   floatingLabelText="Priority"
                   value={this.state.taskPriority}
                   onChange={this.updatePriority}
-                >
-                  <MenuItem value={0} primaryText="0 (No Priority)" />
-                  <MenuItem value={1} primaryText="1 (Urgent)" />
-                  <MenuItem value={2} primaryText="2 (Today)" />
-                  <MenuItem value={3} primaryText="3 (This Week)" />
-                  <MenuItem value={4} primaryText="4 (This Month)" />
-                  <MenuItem value={5} primaryText="5 (Any Time)" />
+                  className = "each">
+                  <MenuItem value={0} primaryText="0 (No Priority)"/>
+                  <MenuItem value={1} primaryText="1 (Urgent)"/>
+                  <MenuItem value={2} primaryText="2 (Today)"/>
+                  <MenuItem value={3} primaryText="3 (This Week)"/>
+                  <MenuItem value={4} primaryText="4 (This Month)"/>
+                  <MenuItem value={5} primaryText="5 (Any Time)"/>
                 </SelectField>
+
                 <SelectField
                   floatingLabelText="Task Goal"
                   value={this.state.taskGoal}
                   onChange={this.updateTaskGoal}
-                >
-                  <MenuItem value={1} primaryText="1" />
-                  <MenuItem value={2} primaryText="2" />
-                  <MenuItem value={3} primaryText="3" />
-                  <MenuItem value={4} primaryText="4" />
-                  <MenuItem value={5} primaryText="5" />
-                  <MenuItem value={6} primaryText="6" />
-                  <MenuItem value={7} primaryText="7" />
-                  <MenuItem value={8} primaryText="8" />
-                  <MenuItem value={9} primaryText="9" />
-                  <MenuItem value={10} primaryText="10" />
+                  className = "each">
+                  <MenuItem value={1} primaryText="1"/>
+                  <MenuItem value={2} primaryText="2"/>
+                  <MenuItem value={3} primaryText="3"/>
+                  <MenuItem value={4} primaryText="4"/>
+                  <MenuItem value={5} primaryText="5"/>
+                  <MenuItem value={6} primaryText="6"/>
+                  <MenuItem value={7} primaryText="7"/>
+                  <MenuItem value={8} primaryText="8"/>
+                  <MenuItem value={9} primaryText="9"/>
+                  <MenuItem value={10} primaryText="10"/>
                 </SelectField>
+
                 <DatePicker
                   hintText="Due Date"
                   value={this.state.dueDate}
                   onChange={this.updateDueDate}
+                  className = "each"
                 />
-              </Flexbox>
-            </CardText>
-          </Dialog>
+              </Dialog>
           <Snackbar
             open={this.state.snackbar}
             message={this.state.message}

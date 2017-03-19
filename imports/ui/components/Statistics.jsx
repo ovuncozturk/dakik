@@ -7,16 +7,61 @@ export default class Statistics extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      taskCountGraph: [
+        {key: 1, value: 0},
+        {key: 2, value: 0},
+        {key: 3, value: 0}
+      ],
+      completenessGraph: [
+        {key: 1, value: 0},
+        {key: 2, value: 0},
+        {key: 3, value: 0}
+      ],
+      estimationGraph: [
+        {key: 1, value: 0},
+        {key: 2, value: 0},
+        {key: 3, value: 0}
+      ]
+    };
+
     this.renderCharts = this.renderCharts.bind(this);
   }
 
-  renderCharts(){
-    data= [
-      {key: 1, value: 5},
-      {key: 2, value: 2},
-      {key: 3, value: 3}
-    ];
+  componentWillReceiveProps(nextProps){
+    var taskExist, trelloTaskExist, wunderlistTaskExist;
 
+    if (nextProps.currentUser.profile.taskCount !== undefined) {
+      taskExist = true;
+    }
+
+    if (nextProps.currentUser.profile.trelloTasksCount !== undefined) {
+      trelloTaskExist = true;
+    }
+
+    if (nextProps.currentUser.profile.wunderlistTasksCount !== undefined) {
+      wunderlistTaskExist = true;
+    }
+
+    var updatedData = this.state.taskCountGraph;
+    if (taskExist) {
+      updatedData[0].value = nextProps.currentUser.profile.taskCount;
+    }
+
+    if (trelloTaskExist) {
+      updatedData[1].value = nextProps.currentUser.profile.trelloTasksCount;
+    }
+
+    if (wunderlistTaskExist) {
+      updatedData[2].value = nextProps.currentUser.profile.wunderlistTasksCount;
+    }
+
+    this.setState({
+      taskCountGraph: updatedData
+    });
+  }
+
+  renderCharts(){
     return(
       <Flexbox>
         <VictoryChart
@@ -39,7 +84,7 @@ export default class Statistics extends Component {
           />
           <VictoryStack colorScale={"warm"}>
             <VictoryBar
-              data={data}
+              data={this.state.taskCountGraph}
               x="key"
               y="value"
             />
@@ -65,7 +110,7 @@ export default class Statistics extends Component {
           />
           <VictoryStack colorScale={"warm"}>
             <VictoryBar
-              data={data}
+              data={this.state.completenessGraph}
               x="key"
               y="value"
             />
@@ -91,7 +136,7 @@ export default class Statistics extends Component {
           />
           <VictoryStack colorScale={"warm"}>
             <VictoryBar
-              data={data}
+              data={this.state.estimationGraph}
               x="key"
               y="value"
             />

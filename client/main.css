@@ -232,17 +232,126 @@ html, body {
 	width: 80%;
 }
 
-.tagView .totalPomos{
-	font-family: 'Raleway', sans-serif;
-	font-size: 1.5em;
-	color: white;
-	font-weight: 800;
-	background-color: black;
-	opacity: .5;
-	align-self:flex-start;
-	padding:0.5em;
-	margin-top: 0px;
-	margin-bottom: 0px;
+/* TASK DETAILS*/
+
+.taskDetailsTitle{
+  color: var(--turk-light) !important;
+  font-size: 1em !important;
+}
+
+.taskDetailsContent > div{
+  background-color: var(--fallback) !important;
+}
+
+.taskDetailsBody p {
+  opacity: 1 !important;
+  color: var(--white) !important;
+}
+
+.taskDetailsContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50% !important;
+}
+
+.taskDetailsContent .each{
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  align-items: stretch;;
+  justify-content: space-between;
+  margin: auto;
+  margin-bottom: .5em;
+  width: 75%;
+}
+
+.taskDetailsContent .taskName{
+  font-size: 3em;
+	margin: auto;
+	margin-bottom: 0.5em;
+  text-align: center;
+	border-radius: 1em;
+	width: 9em;
+  background-color: var(--fallback-dark) !important;
+}
+
+.taskDetailsContent .target{
+  padding: .5em;
+  padding-right: 2em;
+}
+
+.taskDetailsContent p.value {
+	background-color:var(--fallback-dark);
+	color: var(--turk)  !important;
+	padding: .5em;
+}
+
+.taskDetailsActions {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center !important ;
+  justify-content: center;
+}
+
+.taskDetailsActions button{
+ margin: 1em !important;
+ background-color: var(--fallback-light) !important;
+ color: var(--fallback-dark) !important;
+}
+.taskDetailsActions button:hover{
+	color: white !important;
+
+  background-color: var(--fallback-light) !important;
+}
+
+/* TASK Edit*/
+
+.taskEditTitle{
+  color: var(--fallback-dark) !important;
+  font-size: 1em !important;
+}
+
+.taskEditContent > div{
+  background-color: var(--fallback-light) !important;
+}
+.taskEditBody{
+  display: flex !important;
+  flex-direction: column!important;
+  align-items: center;
+}
+.taskEditBody div {
+  color: var(--white) !important;
+}
+
+.taskEditContent {
+  display: flex !important;
+  flex-direction: column!important;
+  justify-content: center!important;
+  width: 50% !important;
+}
+
+.taskEditContent input{
+  margin-bottom: .5em;
+  color: var(--white) !important;
+}
+
+.taskEditActions {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center !important ;
+  justify-content: center;
+}
+
+.taskEditActions button{
+  background-color: var(--fallback-light) !important;
+	margin: 1em !important;
+	color: var(--fallback) !important;
+}
+
+.taskEditActions button:hover{
+  color: var(--fallback-light) !important;
+  background-color: var(--fallback) !important;
 }
 
 .auth{
