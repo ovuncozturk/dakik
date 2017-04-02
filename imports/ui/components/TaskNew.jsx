@@ -1,16 +1,15 @@
 import React, { Component, PropTypes, constructor, State } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import Flexbox from 'flexbox-react';
-import { Session } from 'meteor/session'
+
+import Loading from './Loading.jsx';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TextField from 'material-ui/TextField';
 import {Card, CardActions, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
-import Loading from './Loading.jsx';
 import MenuItem from 'material-ui/MenuItem';
-import { Tasks } from '../../api/tasks.js';
 import DatePicker from 'material-ui/DatePicker';
 
 export default class TaskNew extends Component {
@@ -58,18 +57,19 @@ export default class TaskNew extends Component {
   }
 
   addNewTask(event){
-    const taskName = this.state.taskName;
-    const taskPriority = this.state.taskPriority;
-    const ownerId = this.props.currentUser._id;
-    const checked = false;
-    const totalPomos = 0;
-    const taskGoal = this.state.taskGoal;
-    const integratedWith = "none";
-    const dueDate = this.state.dueDate;
+    Meteor.call(
+      'addTask',
+      this.state.taskName,
+      this.state.taskPriority,
+      this.state.taskGoal,
+      "none",
+      this.state.dueDate
+    );
 
     Session.set({
       "snackbarMessage": "Task added",
-      "snackbar": true
+      "snackbar": true,
+      "route": "timer"
     });
 
     Meteor.setTimeout(function(){
@@ -77,31 +77,6 @@ export default class TaskNew extends Component {
         "snackbar": false
       });
     },4000);
-
-    Tasks.insert({
-      ownerId,
-      taskName,
-      taskPriority,
-      checked,
-      totalPomos,
-      taskGoal,
-      integratedWith,
-      dueDate,
-      createdAt: new Date(),
-    });
-
-    const newProfile = this.props.currentUser.profile;
-    if (newProfile.taskCount !== undefined) {
-      newProfile.taskCount++;
-    } else {
-      newProfile.taskCount = 1;
-    }
-
-    Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
-
-    Session.set({
-      "route": "timer"
-    });
   }
 
   updateDueDate(event, date) {

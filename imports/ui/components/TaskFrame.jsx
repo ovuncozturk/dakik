@@ -1,22 +1,21 @@
 import React, { Component, constructor, State } from 'react';
 import ReactCSSTransition from 'react-addons-css-transition-group';
+import Flexbox from 'flexbox-react';
+var moment = require('moment');
+
+import { Tasks } from '../../api/tasks.js';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Checkbox from 'material-ui/Checkbox';
 import {List, ListItem} from 'material-ui/List';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {Card, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import DatePicker from 'material-ui/DatePicker';
-import Flexbox from 'flexbox-react';
-var moment = require('moment');
-
-import { Tasks } from '../../api/tasks.js';
 
 export default class TaskFrame extends Component {
   constructor(props) {
@@ -123,48 +122,29 @@ export default class TaskFrame extends Component {
   }
 
   startPomo(){
-    if (!this.props.currentUser.profile.playing) {
+    if (!Meteor.user().profile.playing) {
       if (!this.props.task.checked) {
-        var date = new Date();
-        const newProfile = this.props.currentUser.profile;
-
-        newProfile.playing = true;
-        newProfile.elapsedTime = 0;
-        newProfile.updateTime = date.valueOf();
-        newProfile.currentTaskId = this.props.task._id;
-
-        Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
+        var tempProfile = Meteor.user().profile;
+        tempProfile.playing = true;
+        tempProfile.elapsedTime = 0;
+        tempProfile.updateTime = (new Date()).valueOf();
+        tempProfile.currentTaskId = this.props.task._id;
+        Meteor.users.update(Meteor.userId(),{$set: {profile: tempProfile}});
         this.closePopup();
-      } else {
-        this.updateSnackbarText("Uncheck the task first");
-        this.openSnackbar();
       }
     }
   }
 
   deleteTask(){
+    Meteor.call('deleteTask', this.props.task._id);
     this.setState({
       popup: false,
       popup2: false
     });
-    Tasks.remove(this.props.task._id);
   }
 
   editNewDetails() {
-    const taskId = this.props.task._id;
-    const taskName = this.state.taskName;
-    const taskPriority = this.state.taskPriority;
-    const taskGoal = this.state.taskGoal;
-    const dueDate = this.state.dueDate;
-
-    Tasks.update(
-      {_id: taskId}, {$set:{
-        taskName,
-        taskPriority,
-        taskGoal,
-        dueDate,
-      }}
-    );
+    Meteor.call('editTask', this.props.task._id, this.state.taskName, this.state.taskPriority, this.state.taskGoal, this.state.dueDate);
     this.closePopup2();
   }
 
@@ -187,12 +167,9 @@ export default class TaskFrame extends Component {
   }
 
   toggleChecked() {
+    Meteor.call('checkTask', this.props.task._id, !this.state.checked);
     this.setState({
       checked: !this.state.checked
-    });
-
-    Tasks.update(this.props.task._id, {
-      $set: { checked: !this.state.checked },
     });
   }
 
@@ -208,19 +185,19 @@ export default class TaskFrame extends Component {
       <FlatButton
         label="DELETE"
         primary={true}
-        disabled={this.props.currentUser.profile.playing || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
+        disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.deleteTask}
       />,
       <FlatButton
         label="EDIT"
         primary={true}
-        disabled={this.props.currentUser.profile.playing || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
+        disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.openEditPopup}
       />,
       <FlatButton
         label="START"
         primary={true}
-        disabled={this.props.currentUser.profile.playing || this.props.task.checked || this.props.currentUser.profile.elapsedTime > 0 ? true : false}
+        disabled={Meteor.user().profile.playing || this.props.task.checked || Meteor.user().profile.elapsedTime > 0 ? true : false}
         onTouchTap={this.startPomo}
         className = "actionButton start"
       />,
@@ -257,47 +234,50 @@ export default class TaskFrame extends Component {
 
     return (
       <MuiThemeProvider>
-        <div className = "taskFrame"> 
-          <ListItem className= {"taskListItem " + this.getStatus()}
+        <div className = "taskFrame">
+          <ListItem
+            className= {"taskListItem " + this.getStatus()}
             leftCheckbox={leftCheckbox}
             primaryText={this.props.task.taskName}
-            rightIconButton={<IconButton iconClassName="fa fa-ellipsis-v" style={{padding: '-12px'}} onClick={this.openPopup} tooltip="Settings"/>
-          }
-        />
-        <Dialog
-          title="TASK DETAILS"
-          actions={actions}
-          modal={false}
-          open={this.state.popup}
-          onRequestClose={this.closePopup}
-          titleClassName="taskDetailsTitle"
-          contentClassName="taskDetailsContent"
-          bodyClassName="taskDetailsBody"
-          actionsContainerClassName="taskDetailsActions"
+            rightIconButton={
+              <IconButton
+                iconClassName="fa fa-ellipsis-v"
+                style={{padding: '-12px'}}
+                onClick={this.openPopup}
+                tooltip="Settings"
+              />
+            }
+          />
+          <Dialog
+            title="TASK DETAILS"
+            actions={actions}
+            modal={false}
+            open={this.state.popup}
+            onRequestClose={this.closePopup}
+            titleClassName="taskDetailsTitle"
+            contentClassName="taskDetailsContent"
+            bodyClassName="taskDetailsBody"
+            actionsContainerClassName="taskDetailsActions"
           >
             <p className="taskName">{this.props.task.taskName}</p>
 
             <div className="priority each">
-              <p className="target">Priority:
-              </p>
+              <p className="target">Priority:</p>
               <p className="value">{this.props.task.taskPriority}</p>
             </div>
 
             <div className="pomoTime each">
-              <p className="target">Pomotime:
-              </p>
+              <p className="target">Pomotime:</p>
               <p className="value">{this.props.task.totalPomos}</p>
             </div>
 
             <div className="estPomos each">
-              <p className="target">Estimated Pomos:
-              </p>
+              <p className="target">Estimated Pomos:</p>
               <p className="value">{this.props.task.taskGoal}</p>
             </div>
 
             <div className="due each">
-              <p className="target">Due Date:
-              </p>
+              <p className="target">Due Date:</p>
               <p className="value">{moment(this.props.task.dueDate).format("MMM Do YY")}</p>
             </div>
           </Dialog>
@@ -312,59 +292,58 @@ export default class TaskFrame extends Component {
             contentClassName="taskEditContent"
             bodyClassName="taskEditBody"
             actionsContainerClassName="taskEditActions"
+          >
+            <TextField
+              id="edit-task-name"
+              value={this.state.taskName}
+              type="text" onChange={this.updateTaskName}
+              floatingLabelText="Task Name"
+              className = "taskName each"
+            />
+            <SelectField
+              floatingLabelText="Priority"
+              value={this.state.taskPriority}
+              onChange={this.updatePriority}
+              className = "each">
+              <MenuItem value={0} primaryText="0 (No Priority)"/>
+              <MenuItem value={1} primaryText="1 (Urgent)"/>
+              <MenuItem value={2} primaryText="2 (Today)"/>
+              <MenuItem value={3} primaryText="3 (This Week)"/>
+              <MenuItem value={4} primaryText="4 (This Month)"/>
+              <MenuItem value={5} primaryText="5 (Any Time)"/>
+            </SelectField>
+            <SelectField
+              floatingLabelText="Task Goal"
+              value={this.state.taskGoal}
+              onChange={this.updateTaskGoal}
+              className="each"
             >
-              <TextField
-                id="edit-task-name"
-                value={this.state.taskName}
-                type="text" onChange={this.updateTaskName}
-                floatingLabelText="Task Name"
-                className = "taskName each"/>
-
-                <SelectField
-                  floatingLabelText="Priority"
-                  value={this.state.taskPriority}
-                  onChange={this.updatePriority}
-                  className = "each">
-                  <MenuItem value={0} primaryText="0 (No Priority)"/>
-                  <MenuItem value={1} primaryText="1 (Urgent)"/>
-                  <MenuItem value={2} primaryText="2 (Today)"/>
-                  <MenuItem value={3} primaryText="3 (This Week)"/>
-                  <MenuItem value={4} primaryText="4 (This Month)"/>
-                  <MenuItem value={5} primaryText="5 (Any Time)"/>
-                </SelectField>
-
-                <SelectField
-                  floatingLabelText="Task Goal"
-                  value={this.state.taskGoal}
-                  onChange={this.updateTaskGoal}
-                  className = "each">
-                  <MenuItem value={1} primaryText="1"/>
-                  <MenuItem value={2} primaryText="2"/>
-                  <MenuItem value={3} primaryText="3"/>
-                  <MenuItem value={4} primaryText="4"/>
-                  <MenuItem value={5} primaryText="5"/>
-                  <MenuItem value={6} primaryText="6"/>
-                  <MenuItem value={7} primaryText="7"/>
-                  <MenuItem value={8} primaryText="8"/>
-                  <MenuItem value={9} primaryText="9"/>
-                  <MenuItem value={10} primaryText="10"/>
-                </SelectField>
-
-                <DatePicker
-                  hintText="Due Date"
-                  value={this.state.dueDate}
-                  onChange={this.updateDueDate}
-                  className = "each"
-                />
-                <Snackbar
-                  open={this.state.snackbar}
-                  message={this.state.message}
-                  autoHideDuration={4000}
-                  onRequestClose={this.closeSnackbar}
-                />
-              </Dialog>
-            </div>
-          </MuiThemeProvider>
-        );
-      }
-    }
+              <MenuItem value={1} primaryText="1"/>
+              <MenuItem value={2} primaryText="2"/>
+              <MenuItem value={3} primaryText="3"/>
+              <MenuItem value={4} primaryText="4"/>
+              <MenuItem value={5} primaryText="5"/>
+              <MenuItem value={6} primaryText="6"/>
+              <MenuItem value={7} primaryText="7"/>
+              <MenuItem value={8} primaryText="8"/>
+              <MenuItem value={9} primaryText="9"/>
+              <MenuItem value={10} primaryText="10"/>
+            </SelectField>
+            <DatePicker
+              hintText="Due Date"
+              value={this.state.dueDate}
+              onChange={this.updateDueDate}
+              className = "each"
+            />
+            <Snackbar
+              open={this.state.snackbar}
+              message={this.state.message}
+              autoHideDuration={4000}
+              onRequestClose={this.closeSnackbar}
+            />
+          </Dialog>
+        </div>
+      </MuiThemeProvider>
+    );
+  }
+}

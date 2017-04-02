@@ -63,23 +63,14 @@ export default class IntegrationAuth extends Component {
   }
 
   addToDatabase() {
-    const user = this.props.currentUser;
-    const ownerId = user._id;
-    const checked = false;
-    const taskPriority = 0;
-    const totalPomos = 0;
-    const taskGoal = 0;
-    const integratedWith = "trello";
-    const dueDate = null;
-    const createdAt = new Date();
     var taskCount = 0;
-    var trelloTasksCount = 0;
-    if (user.profile.taskCount !== undefined) {
-      taskCount = user.profile.taskCount;
+    if (Meteor.user().profile.taskCount) {
+      taskCount = Meteor.user().profile.taskCount;
     }
 
-    if (user.profile.trelloTasksCount !== undefined) {
-      trelloTasksCount = user.profile.trelloTasksCount;
+    var trelloTasksCount = 0;
+    if (Meteor.user().profile.trelloTasksCount) {
+      trelloTasksCount = Meteor.user().profile.trelloTasksCount;
     }
 
     Trello.members.get("me", function(member){
@@ -89,25 +80,23 @@ export default class IntegrationAuth extends Component {
             for(x=0;x<lists.length;x++) {
               Trello.get('/lists/' + lists[x].id + '/cards', function(cards) {
                 for(y=0;y<cards.length;y++) {
-                  const taskName = cards[y].name;
-                  Tasks.insert({
-                    ownerId,
-                    taskName,
-                    taskPriority,
-                    checked,
-                    totalPomos,
-                    taskGoal,
-                    integratedWith,
-                    dueDate,
-                    createdAt,
-                  });
+                  Meteor.call(
+                    'addTask',
+                    cards[y].name,
+                    0,
+                    0,
+                    "trello",
+                    null,
+                  );
 
-                  taskCount += 1;
-                  trelloTasksCount += 1;
-                  const newProfile = user.profile;
+                  taskCount++;
+                  trelloTasksCount++;
+
+                  const newProfile = Meteor.user().profile;
                   newProfile.taskCount = taskCount;
                   newProfile.trelloTasksCount = trelloTasksCount;
-                  Meteor.users.update({_id: user._id},{$set: {profile: newProfile}});
+
+                  Meteor.users.update(Meteor.userId(),{$set: {profile: newProfile}});
                 }
               });
             }
@@ -142,7 +131,7 @@ export default class IntegrationAuth extends Component {
             </Tab>
             <Tab label="Wunderlist">
               <div>
-                <WunderlistApi currentUser={this.props.currentUser} task={this.props.tasks}/>
+                <WunderlistApi />
               </div>
             </Tab>
           </Tabs>

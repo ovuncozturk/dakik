@@ -3,25 +3,71 @@ import { Mongo } from 'meteor/mongo';
 
 export const Tasks = new Mongo.Collection('tasks');
 
-Tasks.allow({
-  insert: function (userId, doc) {
-    // the user must be logged in, and the document must be owned by the user
-    return (userId && doc.ownerId === userId);
+Meteor.methods({
+  addTask: function(name, priority, goal, integratedWith, dueDate){
+    Tasks.insert({
+      ownerId: Meteor.userId(),
+      taskName: name,
+      taskPriority: priority,
+      taskGoal: goal,
+      totalPomos: 0,
+      checked: false,
+      integratedWith: integratedWith,
+      dueDate: dueDate,
+      createdAt: new Date(),
+    });
+
+    var temp = Meteor.user().profile;
+    temp.taskCount = 1;
+    if (Meteor.user().profile.taskCount) {
+      temp.taskCount = Meteor.user().profile.taskCount + 1;
+    }
+
+    Meteor.users.update(Meteor.userId(),{$set: {profile: temp}});
   },
-  update: function (userId, doc, fields, modifier) {
-    // can only change your own documents
-    return doc.ownerId === userId;
+  editTask: function(id, name, priority, goal, dueDate){
+    Tasks.update(id, {
+      $set: {
+        taskName: name,
+        taskPriority: priority,
+        taskGoal: goal,
+        dueDate: dueDate,
+      }
+    });
   },
-  remove: function (userId, doc) {
-    // can only remove your own documents
-    return doc.ownerId === userId;
+  checkTask: function(id, state){
+    Tasks.update(id, {
+      $set: { checked: state},
+    });
   },
-  fetch: ['ownerId']
+  finishTask: function(id){
+    console.log(id);
+    var tempTask = Tasks.findOne(id);
+    console.log(tempTask);
+    if (tempTask.totalPomos) {
+      Tasks.update(id, {$inc: { totalPomos: 1}});
+    } else {
+      Tasks.update(id, {$set: { totalPomos: 1}});
+    }
+
+    var tempProfile = Meteor.user().profile;
+
+    if (tempProfile.pomoCount) {
+      tempProfile.pomoCount++;
+    } else {
+      tempProfile.pomoCount = 1;
+    }
+
+    Meteor.users.update(Meteor.userId(),{$set: {profile: tempProfile}});
+  },
+  deleteTask: function(id){
+    if (Meteor.userId() && Meteor.userId() === Tasks.findOne(id).ownerId) {
+      Tasks.remove(id);
+    }
+  }
 });
 
 if (Meteor.isServer) {
-  // This code only runs on the server
-
   Meteor.publish('tasks', function tasksPublication() {
     return Tasks.find({ownerId: this.userId});
   });

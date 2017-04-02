@@ -1,19 +1,22 @@
 import React, { Component, PropTypes, constructor, State } from 'react';
-
+import ReactCSSTransition from 'react-addons-css-transition-group';
+import { createContainer } from 'meteor/react-meteor-data';
 import Flexbox from 'flexbox-react';
-import IconButton from 'material-ui/IconButton';
+
+import { Tasks } from '../../api/tasks.js';
+
 import Loading from './Loading.jsx';
-import Toggle from 'material-ui/Toggle';
+import TaskFrame from './TaskFrame.jsx';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import IconButton from 'material-ui/IconButton';
+import Toggle from 'material-ui/Toggle';
 import Subheader from 'material-ui/Subheader';
 import {Card, CardText} from 'material-ui/Card';
 import {List} from 'material-ui/List';
-import TaskFrame from './TaskFrame.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
-import ReactCSSTransition from 'react-addons-css-transition-group';
 
-export default class TaskView extends Component {
-
+class TaskView extends Component {
   constructor(props) {
     super(props);
 
@@ -48,7 +51,7 @@ export default class TaskView extends Component {
     }
 
     return filteredTasks.map((task) => (
-      <TaskFrame key={task._id} task={task} currentUser={this.props.currentUser}/>
+      <TaskFrame key={task._id} task={task}/>
     ));
   }
 
@@ -57,14 +60,14 @@ export default class TaskView extends Component {
       hideCompleted: !this.state.hideCompleted,
     });
 
-    var newProfile = this.props.currentUser.profile;
-    newProfile.hideCompleted = !this.props.currentUser.profile.hideCompleted;
+    var newProfile = Meteor.user().profile;
+    newProfile.hideCompleted = !Meteor.user().profile.hideCompleted;
 
-    Meteor.users.update({_id: this.props.currentUser._id},{$set: {profile: newProfile}});
+    Meteor.users.update(Meteor.userId(),{$set: {profile: newProfile}});
   }
 
   render() {
-    if (this.props.tasks !== undefined && this.props.currentUser !== undefined) {
+    if (this.props.tasks && Meteor.user()) {
       return (
         <MuiThemeProvider>
           <Flexbox>
@@ -73,7 +76,7 @@ export default class TaskView extends Component {
                 <Subheader className="subheader">
                   #TagNameHere
                   <IconButton iconClassName="fa fa-plus-square-o" style={{padding: '-12px'}} onClick={this.routeNewTask} tooltip="New Task"/>
-                  <Toggle label="Hide completed" labelPosition="right" toggled={this.state.hideCompleted} onToggle={this.toggleHide} className = "toggleChecked"/>
+                  <Toggle label="Hide completed" labelPosition="right" toggled={this.state.hideCompleted} onToggle={this.toggleHide} className="toggleChecked"/>
                 </Subheader>
                 <List className="taskList">
                   <ReactCSSTransition
@@ -96,7 +99,11 @@ export default class TaskView extends Component {
   }
 }
 
-TaskView.propTypes = {
-  currentUser: React.PropTypes.object,
-  tasks: React.PropTypes.array,
-};
+export default TaskViewContainer = createContainer(() => {
+  Meteor.subscribe('tasks');
+  const tasks = Tasks.find().fetch();
+
+  return {
+    tasks,
+  };
+}, TaskView);

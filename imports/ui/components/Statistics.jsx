@@ -1,154 +1,136 @@
 import React, { Component, constructor, State } from 'react';
-import { VictoryBar, VictoryTheme, VictoryChart, VictoryAxis, VictoryStack } from 'victory';
+import { createContainer } from 'meteor/react-meteor-data';
+
 import Loading from './Loading.jsx';
 import Flexbox from 'flexbox-react';
 
-export default class Statistics extends Component {
+import { VictoryBar, VictoryTheme, VictoryChart, VictoryAxis, VictoryStack } from 'victory';
+
+class Statistics extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      taskCountGraph: [
-        {key: 1, value: 0},
-        {key: 2, value: 0},
-        {key: 3, value: 0}
-      ],
-      completenessGraph: [
-        {key: 1, value: 0},
-        {key: 2, value: 0},
-        {key: 3, value: 0}
-      ],
-      estimationGraph: [
-        {key: 1, value: 0},
-        {key: 2, value: 0},
-        {key: 3, value: 0}
-      ]
-    };
-
-    this.renderCharts = this.renderCharts.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
-    var taskExist, trelloTaskExist, wunderlistTaskExist;
 
-    if (nextProps.currentUser.profile.taskCount !== undefined) {
-      taskExist = true;
-    }
-
-    if (nextProps.currentUser.profile.trelloTasksCount !== undefined) {
-      trelloTaskExist = true;
-    }
-
-    if (nextProps.currentUser.profile.wunderlistTasksCount !== undefined) {
-      wunderlistTaskExist = true;
-    }
-
-    var updatedData = this.state.taskCountGraph;
-    if (taskExist) {
-      updatedData[0].value = nextProps.currentUser.profile.taskCount;
-    }
-
-    if (trelloTaskExist) {
-      updatedData[1].value = nextProps.currentUser.profile.trelloTasksCount;
-    }
-
-    if (wunderlistTaskExist) {
-      updatedData[2].value = nextProps.currentUser.profile.wunderlistTasksCount;
-    }
-
-    this.setState({
-      taskCountGraph: updatedData
-    });
-  }
-
-  renderCharts(){
-    return(
-      <Flexbox>
-        <VictoryChart
-          // domainPadding will add space to each side of VictoryBar to
-          // prevent it from overlapping the axis
-          domainPadding={20}
-          theme={VictoryTheme.material}
-          width={350}
-         >
-          <VictoryAxis
-            // tickValues specifies both the number of ticks and where
-            // they are placed on the axis
-            tickValues={[1, 2, 3]}
-            tickFormat={["Task Count", "Trello", "Wunderlist"]}
-          />
-          <VictoryAxis
-            dependentAxis
-            // tickFormat specifies how ticks should be displayed
-            tickFormat={(x) => (`${x}`)}
-          />
-          <VictoryStack colorScale={"warm"}>
-            <VictoryBar
-              data={this.state.taskCountGraph}
-              x="key"
-              y="value"
-            />
-          </VictoryStack>
-        </VictoryChart>
-        <VictoryChart
-          // domainPadding will add space to each side of VictoryBar to
-          // prevent it from overlapping the axis
-          domainPadding={20}
-          theme={VictoryTheme.material}
-          width={350}
-         >
-          <VictoryAxis
-            // tickValues specifies both the number of ticks and where
-            // they are placed on the axis
-            tickValues={[1, 2, 3]}
-            tickFormat={["Task Count", "Completed Tasks", "Incomplete Tasks"]}
-          />
-          <VictoryAxis
-            dependentAxis
-            // tickFormat specifies how ticks should be displayed
-            tickFormat={(x) => (`${x}`)}
-          />
-          <VictoryStack colorScale={"warm"}>
-            <VictoryBar
-              data={this.state.completenessGraph}
-              x="key"
-              y="value"
-            />
-          </VictoryStack>
-        </VictoryChart>
-        <VictoryChart
-          // domainPadding will add space to each side of VictoryBar to
-          // prevent it from overlapping the axis
-          domainPadding={20}
-          theme={VictoryTheme.material}
-          width={350}
-         >
-          <VictoryAxis
-            // tickValues specifies both the number of ticks and where
-            // they are placed on the axis
-            tickValues={[1, 2, 3]}
-            tickFormat={["Estimated Pomos", "Completed Pomos", "Remaining Pomos"]}
-          />
-          <VictoryAxis
-            dependentAxis
-            // tickFormat specifies how ticks should be displayed
-            tickFormat={(x) => (`${x}`)}
-          />
-          <VictoryStack colorScale={"warm"}>
-            <VictoryBar
-              data={this.state.estimationGraph}
-              x="key"
-              y="value"
-            />
-          </VictoryStack>
-        </VictoryChart>
-      </Flexbox>
-    );
   }
 
   render() {
-    return (
-      this.renderCharts()
+    return(
+      <Flexbox flexDirection="column">
+        <Flexbox>
+          <VictoryChart
+            domainPadding={20}
+            theme={VictoryTheme.material}
+            width={350}
+           >
+            <VictoryAxis
+              tickValues={[1, 2, 3]}
+              tickFormat={["Task Count", "Trello", "Wunderlist"]}
+            />
+            <VictoryAxis
+              dependentAxis
+              tickFormat={(x) => (`${x}`)}
+            />
+            <VictoryStack>
+              <VictoryBar
+                data={this.props.graph1Data}
+                x="key"
+                y="value"
+              />
+            </VictoryStack>
+          </VictoryChart>
+          <VictoryChart
+            domainPadding={20}
+            theme={VictoryTheme.material}
+            width={350}
+           >
+            <VictoryAxis
+              tickValues={[1, 2, 3]}
+              tickFormat={["Task Count", "Completed Tasks", "Incomplete Tasks"]}
+            />
+            <VictoryAxis
+              dependentAxis
+              tickFormat={(x) => (`${x}`)}
+            />
+            <VictoryStack colorScale={"warm"}>
+              <VictoryBar
+                data={this.props.graph2Data}
+                x="key"
+                y="value"
+              />
+            </VictoryStack>
+          </VictoryChart>
+        </Flexbox>
+        <Flexbox>
+          <VictoryChart
+            domainPadding={20}
+            theme={VictoryTheme.material}
+            width={350}
+           >
+            <VictoryAxis
+              tickValues={[1, 2, 3]}
+              tickFormat={["Estimated Pomos", "Completed Pomos", "Remaining Pomos"]}
+            />
+            <VictoryAxis
+              dependentAxis
+              tickFormat={(x) => (`${x}`)}
+            />
+            <VictoryStack colorScale={"warm"}>
+              <VictoryBar
+                data={this.props.graph3Data}
+                x="key"
+                y="value"
+              />
+            </VictoryStack>
+          </VictoryChart>
+        </Flexbox>
+      </Flexbox>
     );
   }
 }
+
+export default StatisticsContainer = createContainer(() => {
+  var user = Meteor.user();
+
+  var graph1Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
+  if (user.profile.taskCount) {
+    graph1Data[0].value = user.profile.taskCount;
+    if (user.profile.trelloTasksCount) {
+      graph1Data[1].value = user.profile.trelloTasksCount;
+    }
+    if(user.profile.wunderlistTasksCount) {
+      graph1Data[2].value = user.profile.wunderlistTasksCount;
+    }
+  }
+
+  var graph2Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
+  if (user.profile.taskCount) {
+    graph2Data[0].value = user.profile.taskCount;
+    if (user.profile.trelloTasksCount) {
+      graph2Data[1].value = user.profile.trelloTasksCount;
+    }
+    if(user.profile.wunderlistTasksCount) {
+      graph2Data[2].value = user.profile.wunderlistTasksCount;
+    }
+  }
+
+  var graph3Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
+  if (user.profile.taskCount) {
+    graph3Data[0].value = user.profile.taskCount;
+    if (user.profile.trelloTasksCount) {
+      graph3Data[1].value = user.profile.trelloTasksCount;
+    }
+    if(user.profile.wunderlistTasksCount) {
+      graph3Data[2].value = user.profile.wunderlistTasksCount;
+    }
+  }
+
+  return{
+    user,
+    graph1Data,
+    graph2Data,
+    graph3Data
+  };
+}, Statistics);

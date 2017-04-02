@@ -62,48 +62,35 @@ export default class WunderlistApi extends Component {
   }
 
   insertLists() {
-    var user = this.props.currentUser;
-    const ownerId = user._id;
-    const checked = false;
-    const taskPriority = 0;
-    const totalPomos = 0;
-    const taskGoal = null;
-    const integratedWith = "wunderlist";
-    const dueDate = null;
-    const createdAt = new Date();
     var taskCount = 0;
-    var wunderlistTasksCount = 0;
-
-    if (user.profile.taskCount !== undefined) {
-      taskCount = user.profile.taskCount;
+    if (Meteor.user().profile.taskCount) {
+      taskCount = Meteor.user().profile.taskCount;
     }
 
-    if (user.profile.wunderlistTasksCount !== undefined) {
-      wunderlistTasksCount = user.profile.wunderlistTasksCount;
+    var wunderlistTasksCount = 0;
+    if (Meteor.user().profile.wunderlistTasksCount) {
+      wunderlistTasksCount = Meteor.user().profile.wunderlistTasksCount;
     }
 
     Meteor.call('fetchFromService2', function(err, respJson) {
       for(i=0; i<respJson.length; i++) {
         Meteor.call('fetchFromService3', respJson[i].id, function(err, respJsonTask) {
           for(x=0;x<respJsonTask.length;x++) {
-            const taskName = respJsonTask[x].title;
-            Tasks.insert({
-              ownerId,
-              taskName,
-              taskPriority,
-              checked,
-              totalPomos,
-              taskGoal,
-              integratedWith,
-              dueDate,
-              createdAt,
-            });
+            Meteor.call(
+              'addTask',
+              respJsonTask[x].title,
+              0,
+              0,
+              "wunderlist",
+              null,
+            );
+
             taskCount += 1;
             wunderlistTasksCount += 1;
-            const newProfile = user.profile;
+            const newProfile = Meteor.user().profile;
             newProfile.taskCount = taskCount;
             newProfile.wunderlistTasksCount = wunderlistTasksCount;
-            Meteor.users.update({_id: user._id},{$set: {profile: newProfile}});
+            Meteor.users.update(Meteor.userId(),{$set: {profile: newProfile}});
           }
         });
       }
