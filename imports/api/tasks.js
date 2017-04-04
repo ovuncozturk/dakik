@@ -68,7 +68,7 @@ Meteor.methods({
 });
 
 if (Meteor.isServer) {
-  Meteor.publish('tasks', function tasksPublication() {
-    return Tasks.find({ownerId: this.userId});
+  Meteor.publish('tasks', function(skip) {
+    return Tasks.find({ownerId: this.userId}, {skip: skip, limit: 5});
   });
 }

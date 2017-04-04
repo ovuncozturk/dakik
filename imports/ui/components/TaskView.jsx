@@ -100,8 +100,10 @@ class TaskView extends Component {
 }
 
 export default TaskViewContainer = createContainer(() => {
-  Meteor.subscribe('tasks');
-  const tasks = Tasks.find().fetch();
+  var skip = Session.get('skip');
+
+  Meteor.subscribe('tasks', skip);
+  var tasks = Tasks.find().fetch();
 
   return {
     tasks,
