@@ -27,10 +27,20 @@ class TaskView extends Component {
     this.routeNewTask = this.routeNewTask.bind(this);
     this.renderTasks = this.renderTasks.bind(this);
     this.toggleHide = this.toggleHide.bind(this);
+    this.prevButton = this.prevButton.bind(this);
+    this.nextButton = this.nextButton.bind(this);
+  }
+
+  prevButton() {
+    Session.set('skip', Session.get('skip') - 5);
+  }
+
+  nextButton() {
+    Session.set('skip', Session.get('skip') + 5);
   }
 
   componentWillReceiveProps(nextProps){
-    if (nextProps.currentUser !== undefined) {
+    if (nextProps.currentUser) {
       this.setState({
         hideCompleted: nextProps.currentUser.profile.hideCompleted,
       });
@@ -51,7 +61,7 @@ class TaskView extends Component {
     }
 
     return filteredTasks.map((task) => (
-      <TaskFrame key={task._id} task={task}/>
+      <TaskFrame key={task._id} task={task} length={this.props.length}/>
     ));
   }
 
@@ -76,6 +86,8 @@ class TaskView extends Component {
                 <Subheader className="subheader">
                   #TagNameHere
                   <IconButton iconClassName="fa fa-plus-square-o" style={{padding: '-12px'}} onClick={this.routeNewTask} tooltip="New Task"/>
+                  <RaisedButton label="Prev" disabled={Session.get('skip') === 0 ? true : false} onClick={this.prevButton} backgroundColor = "#FFFFFF" labelColor="#004D40"/>
+                  <RaisedButton label="Next" disabled={this.props.length != 6 ? true : false} onClick={this.nextButton} backgroundColor = "#FFFFFF" labelColor="#004D40"/>
                   <Toggle label="Hide completed" labelPosition="right" toggled={this.state.hideCompleted} onToggle={this.toggleHide} className="toggleChecked"/>
                 </Subheader>
                 <List className="taskList">
@@ -103,9 +115,11 @@ export default TaskViewContainer = createContainer(() => {
   var skip = Session.get('skip');
 
   Meteor.subscribe('tasks', skip);
-  var tasks = Tasks.find().fetch();
+  var length = Tasks.find().count();
+  var tasks = Tasks.find({}, {limit: 5}).fetch();
 
   return {
+    length,
     tasks,
   };
 }, TaskView);

@@ -136,6 +136,9 @@ export default class TaskFrame extends Component {
   }
 
   deleteTask(){
+    if(this.props.length === 1) {
+      Session.set('skip', Session.get('skip') - 5);
+    }
     Meteor.call('deleteTask', this.props.task._id);
     this.setState({
       popup: false,

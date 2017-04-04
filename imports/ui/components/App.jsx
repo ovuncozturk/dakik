@@ -20,7 +20,7 @@ class App extends Component {
   }
 
   render() {
-  	if (Meteor.user() !== undefined) {
+  	if (Meteor.user()) {
   	  if (this.props.route == 'timer') {
     		return (
     			<Flexbox flexDirection='column'>

@@ -12,10 +12,6 @@ class Statistics extends Component {
 
   }
 
-  componentWillReceiveProps(nextProps){
-
-  }
-
   render() {
     return(
       <Flexbox flexDirection="column">
