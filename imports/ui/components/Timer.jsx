@@ -48,7 +48,7 @@ export default class Timer extends Component {
     }
 
     if (this.state.playing) {
-      this.timer = setTimeout(() => this.progress(), 1000);
+      this.timer = setTimeout(() => this.progress(), 200);
     }
   }
 
@@ -58,7 +58,7 @@ export default class Timer extends Component {
         playing: true,
         elapsedTime: Meteor.user().profile.elapsedTime,
       });
-      this.timer = setTimeout(() => this.progress(), 1000);
+      this.timer = setTimeout(() => this.progress(), 200);
     }
   }
 
@@ -79,12 +79,12 @@ export default class Timer extends Component {
   progress() {
     if (this.state.playing) {
       if (this.state.elapsedTime < 1500) {
-        const temp = this.state.elapsedTime + 1;
+        const temp = this.state.elapsedTime + (1/5);
         this.setState({
           elapsedTime: temp,
           elapsedAngle: temp / 15,
         });
-        this.timer = setTimeout(() => this.progress(), 1000);
+        this.timer = setTimeout(() => this.progress(), 200);
       } else if(this.state.elapsedTime >= 1500){
         Meteor.call('finishTask', Meteor.user().profile.currentTaskId);
         this.handleStop();
@@ -101,7 +101,7 @@ export default class Timer extends Component {
       this.setState({
         playing: true,
       });
-      this.timer = setTimeout(() => this.progress(), 1000);
+      this.timer = setTimeout(() => this.progress(), 200);
     }
   }
 

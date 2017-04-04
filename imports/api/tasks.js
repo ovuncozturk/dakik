@@ -18,11 +18,17 @@ Meteor.methods({
     });
 
     var temp = Meteor.user().profile;
-    temp.taskCount = 1;
-    if (Meteor.user().profile.taskCount) {
-      temp.taskCount = Meteor.user().profile.taskCount + 1;
+    temp.statistics.taskCount++;
+    temp.statistics.incompleteTasks++;
+    switch (integratedWith) {
+      case "trello":
+        temp.statistics.trelloTasksCount++;
+        break;
+      case "wunderlist":
+        temp.statistics.wunderlistTasksCount++;
+        break;
     }
-
+    temp.statistics.estimatedPomos += goal;
     Meteor.users.update(Meteor.userId(),{$set: {profile: temp}});
   },
   editTask: function(id, name, priority, goal, dueDate){
@@ -39,6 +45,14 @@ Meteor.methods({
     Tasks.update(id, {
       $set: { checked: state},
     });
+
+    var temp = Meteor.user().profile;
+    if (state === false) {
+      temp.statistics.incompleteTasks++;
+    } else {
+      temp.statistics.incompleteTasks--;
+    }
+    Meteor.users.update(Meteor.userId(),{$set: {profile: temp}});
   },
   finishTask: function(id){
     console.log(id);
@@ -50,15 +64,9 @@ Meteor.methods({
       Tasks.update(id, {$set: { totalPomos: 1}});
     }
 
-    var tempProfile = Meteor.user().profile;
-
-    if (tempProfile.pomoCount) {
-      tempProfile.pomoCount++;
-    } else {
-      tempProfile.pomoCount = 1;
-    }
-
-    Meteor.users.update(Meteor.userId(),{$set: {profile: tempProfile}});
+    var temp = Meteor.user().profile;
+    temp.statistics.completedPomos++;
+    Meteor.users.update(Meteor.userId(),{$set: {profile: temp}});
   },
   deleteTask: function(id){
     if (Meteor.userId() && Meteor.userId() === Tasks.findOne(id).ownerId) {

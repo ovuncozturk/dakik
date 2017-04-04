@@ -5,10 +5,9 @@ import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
-import Rsvg from 'react-inlinesvg';
 
 export default class Auth extends Component {
   constructor(props) {
@@ -145,7 +144,16 @@ export default class Auth extends Component {
             hideCompleted: false,
             playing: false,
             elapsedTime: 0,
-            updateTime: 0
+            updateTime: 0,
+            statistics: {
+              taskCount: 0,
+              trelloTasksCount: 0,
+              wunderlistTasksCount: 0,
+              currentTaskId: 0,
+              incompleteTasks: 0,
+              completedPomos: 0,
+              incompletePomos: 0,
+            }
           }
         }, (error, data) => {
           if(error) {

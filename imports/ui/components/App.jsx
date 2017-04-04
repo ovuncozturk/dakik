@@ -21,7 +21,7 @@ class App extends Component {
 
   render() {
   	if (Meteor.user()) {
-  	  if (this.props.route == 'timer') {
+  	  if (this.props.route === 'timer') {
     		return (
     			<Flexbox flexDirection='column'>
     				<Nav/>
@@ -33,7 +33,7 @@ class App extends Component {
             </Flexbox>
     			</Flexbox>
     		);
-  	  } else if(this.props.route == 'statistics') {
+  	  } else if(this.props.route === 'statistics') {
     		return (
     		  <Flexbox flexDirection='column'>
             <Nav />
@@ -43,7 +43,7 @@ class App extends Component {
             </Flexbox>
     		  </Flexbox>
     		);
-  	  } else if(this.props.route == 'settings'){
+  	  } else if(this.props.route === 'settings'){
     		return (
     		  <Flexbox flexDirection='column'>
             <Nav />
@@ -53,7 +53,7 @@ class App extends Component {
             </Flexbox>
     		  </Flexbox>
     		);
-  	  } else if(this.props.route == 'taskNew'){
+  	  } else if(this.props.route === 'taskNew'){
     		return (
     		  <Flexbox flexDirection='column'>
             <Nav />
@@ -62,7 +62,7 @@ class App extends Component {
             </Flexbox>
     		  </Flexbox>
     		);
-  	  } else if(this.props.route == 'about'){
+  	  } else if(this.props.route === 'about'){
     		return (
     		  <Flexbox flexDirection='column'>
             <Nav />

@@ -63,16 +63,6 @@ export default class IntegrationAuth extends Component {
   }
 
   addToDatabase() {
-    var taskCount = 0;
-    if (Meteor.user().profile.taskCount) {
-      taskCount = Meteor.user().profile.taskCount;
-    }
-
-    var trelloTasksCount = 0;
-    if (Meteor.user().profile.trelloTasksCount) {
-      trelloTasksCount = Meteor.user().profile.trelloTasksCount;
-    }
-
     Trello.members.get("me", function(member){
       Trello.get("/member/me/boards", function(boards) {
         for(i=0;i<boards.length;i++) {
@@ -84,26 +74,16 @@ export default class IntegrationAuth extends Component {
                     'addTask',
                     cards[y].name,
                     0,
-                    0,
+                    1,
                     "trello",
                     null,
                   );
-
-                  taskCount++;
-                  trelloTasksCount++;
-
-                  const newProfile = Meteor.user().profile;
-                  newProfile.taskCount = taskCount;
-                  newProfile.trelloTasksCount = trelloTasksCount;
-
-                  Meteor.users.update(Meteor.userId(),{$set: {profile: newProfile}});
                 }
               });
             }
           });
         }
       });
-
     });
   }
 

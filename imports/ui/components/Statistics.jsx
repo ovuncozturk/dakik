@@ -9,7 +9,6 @@ import { VictoryBar, VictoryTheme, VictoryChart, VictoryAxis, VictoryStack } fro
 class Statistics extends Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
@@ -90,38 +89,23 @@ class Statistics extends Component {
 export default StatisticsContainer = createContainer(() => {
   var user = Meteor.user();
 
-  var graph1Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
-  if (user.profile.taskCount) {
-    graph1Data[0].value = user.profile.taskCount;
-    if (user.profile.trelloTasksCount) {
-      graph1Data[1].value = user.profile.trelloTasksCount;
-    }
-    if(user.profile.wunderlistTasksCount) {
-      graph1Data[2].value = user.profile.wunderlistTasksCount;
-    }
-  }
+  var graph1Data = [
+    {key: 1, value: user.profile.statistics.taskCount},
+    {key: 2, value: user.profile.statistics.trelloTasksCount},
+    {key: 3, value: user.profile.statistics.wunderlistTasksCount}
+  ];
 
-  var graph2Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
-  if (user.profile.taskCount) {
-    graph2Data[0].value = user.profile.taskCount;
-    if (user.profile.trelloTasksCount) {
-      graph2Data[1].value = user.profile.trelloTasksCount;
-    }
-    if(user.profile.wunderlistTasksCount) {
-      graph2Data[2].value = user.profile.wunderlistTasksCount;
-    }
-  }
+  var graph2Data = [
+    {key: 1, value: user.profile.statistics.taskCount},
+    {key: 2, value: user.profile.statistics.taskCount - user.profile.statistics.incompleteTasks},
+    {key: 3, value: user.profile.statistics.incompleteTasks}
+  ];
 
-  var graph3Data = [{key: 1, value: 0}, {key: 2, value: 0}, {key: 3, value: 0}];
-  if (user.profile.taskCount) {
-    graph3Data[0].value = user.profile.taskCount;
-    if (user.profile.trelloTasksCount) {
-      graph3Data[1].value = user.profile.trelloTasksCount;
-    }
-    if(user.profile.wunderlistTasksCount) {
-      graph3Data[2].value = user.profile.wunderlistTasksCount;
-    }
-  }
+  var graph3Data = [
+    {key: 1, value: user.profile.statistics.estimatedPomos},
+    {key: 2, value: user.profile.statistics.completedPomos},
+    {key: 3, value: user.profile.statistics.estimatedPomos - user.profile.statistics.completedPomos}
+  ];
 
   return{
     user,

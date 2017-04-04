@@ -57,44 +57,33 @@ class Profile extends Component {
     ];
 
     if (this.props.user) {
-      if (this.props.user.profile) {
-        return (
-          <MuiThemeProvider>
-            <Card>
-              <CardHeader
-                title={this.props.user.username ? this.props.user.username : 'Registered username was not found..'}
-                subtitle= {this.props.user.emails ? this.props.user.emails[0].address : 'Registered email address was not found..'}
-                avatar="/jsa-128.jpg"
-              />
-              <CardTitle title="Statistics"/>
-              <CardText>
-                Tasks Created: {this.props.user.profile.taskCount ? this.props.user.profile.taskCount : 0}<br/>
-                Tasks Integrated With Trello: {this.props.user.profile.trelloTasksCount ? this.props.user.profile.trelloTasksCount : 0}<br/>
-                Tasks Integrated With Wunderlist: {this.props.user.profile.wunderlistTasksCount ? this.props.user.profile.wunderlistTasksCount : 0}<br/>
-                Finished Pomos: {this.props.user.profile.pomoCount ? this.props.user.profile.pomoCount : 0}<br/>
-              </CardText>
-              <CardActions>
-                <IconButton iconClassName="fa fa-sign-out" style={{padding: '-12px'}} tooltip="Log out" onClick={this.handleOpenLogout}/>
-              </CardActions>
-            <Dialog actions={actions} modal={false} open={this.state.openLogout} onRequestClose={this.handleCloseLogout}>
-              Are you sure ?
-            </Dialog>
-            </Card>
-          </MuiThemeProvider>
-        );
-      } else {
-        return (
-          <MuiThemeProvider>
-            <Card>
-              <CardHeader
-                title={this.props.user.username ? this.props.user.username : 'Registered username was not found..'}
-                subtitle= {this.props.user.emails ? this.props.user.emails[0].address : 'Registered email address was not found..'}
-                avatar="/jsa-128.jpg"
-              />
-            </Card>
-          </MuiThemeProvider>
-        );
-      }
+      return (
+        <MuiThemeProvider>
+          <Card>
+            <CardHeader
+              title={this.props.user.username}
+              subtitle= {this.props.user.emails[0].address}
+              avatar="/jsa-128.jpg"
+            />
+            <CardTitle title="Statistics"/>
+            <CardText>
+              Tasks Created: {this.props.user.profile.statistics.taskCount}<br/>
+              Tasks Integrated With Trello: {this.props.user.profile.statistics.trelloTasksCount}<br/>
+              Tasks Integrated With Wunderlist: {this.props.user.profile.statistics.wunderlistTasksCount}<br/>
+              Completed Tasks: {this.props.user.profile.statistics.taskCount - this.props.user.profile.statistics.incompleteTasks}<br/>
+              Incomplete Tasks: {this.props.user.profile.statistics.incompleteTasks}<br/>
+              Finished Pomos: {this.props.user.profile.statistics.completedPomos}<br/>
+              Estimated Pomos: {this.props.user.profile.statistics.estimatedPomos}<br/>
+            </CardText>
+            <CardActions>
+              <IconButton iconClassName="fa fa-sign-out" style={{padding: '-12px'}} tooltip="Log out" onClick={this.handleOpenLogout}/>
+            </CardActions>
+          <Dialog actions={actions} modal={false} open={this.state.openLogout} onRequestClose={this.handleCloseLogout}>
+            Are you sure ?
+          </Dialog>
+          </Card>
+        </MuiThemeProvider>
+      );
     } else {
       return (
         <Loading/>
@@ -104,7 +93,7 @@ class Profile extends Component {
 }
 
 export default ProfileContainer = createContainer(() => {
-  const user = Meteor.users.findOne(Meteor.userId());
+  const user = Meteor.users.findOne(Meteor.userId(), {profile: 1, username: 1, emails: 1});
   return{
     user,
   };
