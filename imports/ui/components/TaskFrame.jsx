@@ -9,10 +9,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Checkbox from 'material-ui/Checkbox';
 import {List, ListItem} from 'material-ui/List';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import DatePicker from 'material-ui/DatePicker';
@@ -185,25 +185,25 @@ export default class TaskFrame extends Component {
 
   render() {
     const actions = [
-      <FlatButton
-        label="DELETE"
-        primary={true}
+      <IconButton
+        iconClassName="fa fa-trash-o"
+        tooltip="DELETE"
+        onClick={this.deleteTask}
         disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
-        onTouchTap={this.deleteTask}
       />,
-      <FlatButton
-        label="EDIT"
-        primary={true}
+      <IconButton
+        iconClassName="fa fa-pencil-square-o"
+        tooltip="EDIT"
+        onClick={this.openEditPopup}
         disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
-        onTouchTap={this.openEditPopup}
       />,
-      <FlatButton
-        label="START"
-        primary={true}
-        disabled={Meteor.user().profile.playing || this.props.task.checked || Meteor.user().profile.elapsedTime > 0 ? true : false}
-        onTouchTap={this.startPomo}
+      <IconButton
+        iconClassName="fa fa-play"
+        tooltip="START"
+        onClick={this.startPomo}
         className = "actionButton start"
-      />,
+        disabled={Meteor.user().profile.playing || this.props.task.checked || Meteor.user().profile.elapsedTime > 0 ? true : false}
+      />
     ];
 
     const actions2 = [
@@ -257,6 +257,7 @@ export default class TaskFrame extends Component {
             modal={false}
             open={this.state.popup}
             onRequestClose={this.closePopup}
+            className = "taskDetails"
             titleClassName="taskDetailsTitle"
             contentClassName="taskDetailsContent"
             bodyClassName="taskDetailsBody"
