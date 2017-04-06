@@ -186,36 +186,39 @@ export default class TaskFrame extends Component {
   render() {
     const actions = [
       <IconButton
-        iconClassName="fa fa-trash-o"
-        tooltip="DELETE"
-        onClick={this.deleteTask}
-        disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
+		  iconClassName="delete fa fa-trash-o"
+		  tooltip="DELETE"
+		  onClick={this.deleteTask}
+		  disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
       />,
       <IconButton
-        iconClassName="fa fa-pencil-square-o"
-        tooltip="EDIT"
-        onClick={this.openEditPopup}
-        disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
+		  iconClassName="edit fa fa-pencil-square-o"
+		  tooltip="EDIT"
+		  onClick={this.openEditPopup}
+		  disabled={Meteor.user().profile.playing || Meteor.user().profile.elapsedTime > 0 ? true : false}
       />,
       <IconButton
-        iconClassName="fa fa-play"
-        tooltip="START"
-        onClick={this.startPomo}
-        className = "actionButton start"
+		  iconClassName="start fa fa-play"
+		  tooltip="START"
+		  onClick={this.startPomo}
+		  className = "actionButton start"
         disabled={Meteor.user().profile.playing || this.props.task.checked || Meteor.user().profile.elapsedTime > 0 ? true : false}
       />
     ];
 
     const actions2 = [
-      <FlatButton
-        label="CANCEL"
-        primary={true}
-        onTouchTap={this.closePopup2}
+      <IconButton
+		  label="CANCEL"
+		  iconClassName="cancel fa fa-times-circle"
+
+		  primary={true}
+		  onTouchTap={this.closePopup2}
       />,
-      <FlatButton
-        label="SAVE"
-        primary={true}
-        onTouchTap={this.editNewDetails}
+      <IconButton
+		  iconClassName="ok fa fa-check"
+		  label="SAVE"
+		  primary={true}
+		  onTouchTap={this.editNewDetails}
       />,
     ];
 
@@ -237,65 +240,65 @@ export default class TaskFrame extends Component {
 
     return (
       <MuiThemeProvider>
-        <div className = "taskFrame">
-          <ListItem
-            className= {"taskListItem " + this.getStatus()}
-            leftCheckbox={leftCheckbox}
-            primaryText={this.props.task.taskName}
-            rightIconButton={
-              <IconButton
-                iconClassName="fa fa-ellipsis-v"
-                style={{padding: '-12px'}}
-                onClick={this.openPopup}
-                tooltip="Settings"
-              />
-            }
-          />
-          <Dialog
-            title="TASK DETAILS"
-            actions={actions}
-            modal={false}
-            open={this.state.popup}
-            onRequestClose={this.closePopup}
-            className = "taskDetails"
-            titleClassName="taskDetailsTitle"
-            contentClassName="taskDetailsContent"
-            bodyClassName="taskDetailsBody"
-            actionsContainerClassName="taskDetailsActions"
-          >
-            <p className="taskName">{this.props.task.taskName}</p>
+		  <div className = "taskFrame">
+			  <ListItem
+				  className= {"taskListItem " + this.getStatus()}
+				  leftCheckbox={leftCheckbox}
+				  primaryText={this.props.task.taskName}
+				  rightIconButton={
+					  <IconButton
+						  iconClassName="fa fa-ellipsis-v"
+						  style={{padding: '-12px'}}
+						  onClick={this.openPopup}
+						  tooltip="Settings"
+					  />
+				  }
+			  />
+			  <Dialog
+				  title="TASK DETAILS"
+				  actions={actions}
+				  modal={false}
+				  open={this.state.popup}
+				  onRequestClose={this.closePopup}
+				  className = "taskDetails"
+				  titleClassName="taskDetailsTitle"
+				  contentClassName="taskDetailsContent"
+				  bodyClassName="taskDetailsBody"
+				  actionsContainerClassName="taskDetailsActions"
+			  >
+				  <p className="taskName">{this.props.task.taskName}</p>
 
-            <div className="priority each">
-              <p className="target">Priority:</p>
-              <p className="value">{this.props.task.taskPriority}</p>
-            </div>
+				  <div className="priority each">
+					  <p className="target">Priority:</p>
+					  <p className="value">{this.props.task.taskPriority}</p>
+				  </div>
 
-            <div className="pomoTime each">
-              <p className="target">Pomotime:</p>
-              <p className="value">{this.props.task.totalPomos}</p>
-            </div>
+				  <div className="pomoTime each">
+					  <p className="target">Pomotime:</p>
+					  <p className="value">{this.props.task.totalPomos}</p>
+				  </div>
 
-            <div className="estPomos each">
-              <p className="target">Estimated Pomos:</p>
-              <p className="value">{this.props.task.taskGoal}</p>
-            </div>
+				  <div className="estPomos each">
+					  <p className="target">Estimated Pomos:</p>
+					  <p className="value">{this.props.task.taskGoal}</p>
+				  </div>
 
-            <div className="due each">
-              <p className="target">Due Date:</p>
-              <p className="value">{moment(this.props.task.dueDate).format("MMM Do YY")}</p>
-            </div>
-          </Dialog>
-          <Dialog
-            title="TASK EDIT"
-            actions={actions2}
-            modal={false}
-            open={this.state.popup2}
-            onRequestClose={this.closePopup2}
-            className="taskEditTitle"
-            titleClassName="taskEditTitle"
-            contentClassName="taskEditContent"
-            bodyClassName="taskEditBody"
-            actionsContainerClassName="taskEditActions"
+				  <div className="due each">
+					  <p className="target">Due Date:</p>
+					  <p className="value">{moment(this.props.task.dueDate).format("MMM Do YY")}</p>
+				  </div>
+			  </Dialog>
+			  <Dialog
+				  title="TASK EDIT"
+				  actions={actions2}
+				  modal={false}
+				  open={this.state.popup2}
+				  onRequestClose={this.closePopup2}
+				  className="taskEditPop"
+				  titleClassName="taskEditTitle"
+				  contentClassName="taskEditContent"
+				  bodyClassName="taskEditBody"
+				  actionsContainerClassName="taskEditActions"
           >
             <TextField
               id="edit-task-name"
